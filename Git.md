@@ -23,11 +23,8 @@
 - 添加密钥至 Github 账号后，测试密钥连接：`$ ssh -T git@github.com`
 
 ### 配置 .gitignore
-'' .idea/
-'' .sass-cache/
-'' .tmp/
-'' bower_components/
-'' node_modules/
+- 临时路径：`.idea/` `.sass-cache/` `.tmp/`
+- 模块路径：`bower_components/` `node_modules/`
 
 ### 核心概念
 - Workspace: 工作区
@@ -39,38 +36,38 @@
 (img) 
 
 ### 仓库操作
-''$ git init              # 初始化当前目录为 Repository
-''$ git clone [url]       # 克隆 Remote 到当前目录
-''$ git status            # 查看当前 Repository 的状态
+- 初始化当前目录为 Repository：`$ git init`
+- 克隆 Remote 到当前目录：`$ git clone [url]`
+- 查看当前 Repository 的状态：`$ git status `
 
 ### 文件操作
-''$ git add .                         # 首次追踪目录 或将已追踪目录的修改添加至 Index
-''$ git add [dir]                     # 首次追踪目录 或将已追踪目录的修改添加至 Index
-''$ git add [file1] [file2] ...       # 首次追踪文件 或将已追踪文件的修改添加至 Index
-''$ git rm [file1] [file2] ...        # 删除 Workspace 中的指定文件并将删除操作添加至 Index
-''$ git mv [file-from] [file-to]      # 重命名 Workspace 中的指定文件并将重命名操作添加至 Index
+- 首次追踪目录 或将已追踪目录的修改添加至 Index：`$ git add .`
+- 首次追踪目录 或将已追踪目录的修改添加至 Index：`$ git add [dir]`
+- 首次追踪文件 或将已追踪文件的修改添加至 Index：`$ git add [file1] [file2] ...`
+- 删除 Workspace 中的指定文件并将删除操作添加至 Index：`$ git rm [file1] [file2] ...`
+- 重命名 Workspace 中的指定文件并将重命名操作添加至 Index：`$ git mv [file-from] [file-to]`
 
 ### 提交操作
-''$ git log                                           # 查看最近的提交日志
-''$ git commit -m [message]                           # 提交 Index 到 Repository
-''$ git commit [file1] [file2] ... -m [message]       # 提交 Index 中的指定文件到 Repository
+- 查看最近的提交日志：`$ git log`
+- 提交 Index 到 Repository：`$ git commit -m [message]`
+- 提交 Index 中的指定文件到 Repository：`$ git commit [file1] [file2] ... -m [message]`
 
 ### 分支操作
-''$ git branch                                 # 列出本地分支
-''$ git branch -d [branch]                     # 删除本地分支
-''$ git checkout [branch]                      # 切换本地分支
-''$ git checkout --track [origin/branch]       # 新建本地分支
+- 列出本地分支：`$ git branch`
+- 删除本地分支：`$ git branch -d [branch]`
+- 切换本地分支：`$ git checkout [branch]`
+- 新建本地分支：`$ git checkout --track [origin/branch]`
 
 ### 状态操作
-''$ git checkout [file]       # 恢复 Index 的指定文件到 Workspace
-''$ git reset --hard          # 重置 Index 和 Workspace 至上次 commit
-''$ git stash                 # 将已追踪文件的 Workspace 保存为工作现场
-''$ git stash pop             # 还原工作现场到 Workspace 并删除 stash
+- 恢复 Index 的指定文件到 Workspace：`$ git checkout [file]`
+- 重置 Index 和 Workspace 至上次 commit：`$ git reset --hard`
+- 将已追踪文件的 Workspace 保存为工作现场：`$ git stash`
+- 还原工作现场到 Workspace 并删除 stash：`$ git stash pop`
 
 ### 同步流程
-''$ git fetch                      # 拉取远程分支到本地仓库
-''$ git merge [orgin/branch]       # 合并指定分支到当前分支
-''$ git push origin [branch]       # 推送当前分支到指定分支
+- 拉取远程分支到本地仓库：`$ git fetch`
+- 合并指定分支到当前分支：`$ git merge [orgin/branch]`
+- 推送当前分支到指定分支：`$ git push origin [branch]`
 
 ### 参考资料
 1. [廖雪峰：Git 教程]
