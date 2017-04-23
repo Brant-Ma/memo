@@ -53,7 +53,7 @@
 - 第 3 级：使用超媒体作为应用状态引擎（HATEOAS）
 
 ### 安全性和幂等性
-![安全与幂等](image/RESTful-1.jpg)
+![安全与幂等](../image/RESTful-1.jpg)
 
 ### 参考
 - [理解本真的 REST 架构风格](http://www.infoq.com/cn/articles/understanding-restful-style)

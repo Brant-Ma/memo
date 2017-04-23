@@ -33,7 +33,7 @@
 - Remote Repository: 远程仓库
 
 ### 操作图解
-![Git 核心操作](image/Git-1.png)
+![Git 核心操作](../image/Git-1.png)
 
 ### 仓库操作
 - 初始化当前目录为 Repository：`$ git init`
