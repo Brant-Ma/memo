@@ -53,8 +53,8 @@
 - 第 3 级：使用超媒体作为应用状态引擎（HATEOAS）
 
 ### 安全性和幂等性
-(img)
+![安全与幂等](image/RESTful-1.jpg)
 
 ### 参考
-- [理解本真的 REST 架构风格]
-- [Best Practices for Designing a Pragmatic RESTful API]
+- [理解本真的 REST 架构风格](http://www.infoq.com/cn/articles/understanding-restful-style)
+- [Best Practices for Designing a Pragmatic RESTful API](http://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api)
