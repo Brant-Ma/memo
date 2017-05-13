@@ -69,7 +69,7 @@
 - 合并指定分支到当前分支：`$ git merge [orgin/branch]`
 - 推送当前分支到指定分支：`$ git push origin [branch]`
 
-### 参考资料
+### 参考
 1. [廖雪峰：Git 教程](http://www.liaoxuefeng.com/wiki/0013739516305929606dd18361248578c67b8067c8c017b000)
 2. [颜海镜：我的 Git 笔记](http://yanhaijing.com/git/2014/11/01/my-git-note/)
 3. [阮一峰：常用 Git 清单](http://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html)

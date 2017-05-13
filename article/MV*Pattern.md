@@ -16,6 +16,6 @@
 - 调用关系：View 捕获到用户的操作后，将控制权移交给 ViewModel；ViewModel 执行相应的应用逻辑，并对 Model 进行相应的操作；Model 执行相应的业务逻辑；ViewModel 的 Binder 通过双向数据绑定来自动同步 View 和 Model 之间的数据更新
 
 
-### 参考资料
+### 参考
 1. [界面之下：还原真实的 MV\* 模式](https://github.com/livoras/blog/issues/11)
 2. [前端 MVC 已死？](https://blog.yongyuan.us/articles/2016-10-15-mvc-dead/)

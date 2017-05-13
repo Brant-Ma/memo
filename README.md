@@ -8,6 +8,7 @@
 - [Command Line](article/CommandLine.md)
 - [Sass](article/Sass.md)
 - [npm](article/npm.md)
+- [Sublime Text](article/SublimeText.md)
 
 ## License
 MIT
