@@ -2,7 +2,7 @@
 > 摆脱重量级的 IDE，使用轻量级的 editor
 
 ### Install
-- 安装 package control: 打开 console, 复制 [代码] 完成安装
+- 安装 package control: 打开 console, 复制 [代码](https://packagecontrol.io/installation) 完成安装
 - 安装包: 在命令面板，输入 `install` 匹配 `Package control: Install Package` 进行自动安装；输入 `add` 匹配 `Package Control: Add repository` 进行手动安装
 
 ### Palette
@@ -48,4 +48,4 @@
 - Data URIs are a way to convert binary files (usually PNGs and JPGs) into a single string of text. `ctrl + shift + d`
 
 ### 参考
-1. [Sublime Text Power User]
+1. [Sublime Text Power User](https://sublimetextbook.com/)
