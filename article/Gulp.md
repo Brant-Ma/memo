@@ -3,13 +3,16 @@
 
 ### 安装
 全局安装：
+
 	$ npm rm --global gulp
 	$ npm install --global gulp-cli
 
 本地安装：
+
 	$ npm install --save-dev gulp
 
 在项目根目录下创建 `gulpfile.js` 文件：
+
 	var gulp = require('gulp');
 	
 	gulp.task('default', function() {
@@ -17,6 +20,7 @@
 	});
 
 在项目的目录下使用命令行进行测试：
+
 	$ gulp
 
 ### Glob 语法
@@ -79,12 +83,15 @@ node-glob 是 glob 的一种 JavaScript 实现，用来匹配文件。
 
 ### CLI
 执行默认任务：
+
 	$ gulp
 
 执行指定的单个任务，或者并发执行指定的多个任务：
+
 	$ gulp <task> <task> ...
 
 显示 gulp 版本：
+
 	$ gulp -v
 
 ### 参考
