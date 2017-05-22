@@ -1,5 +1,5 @@
 # memo
-这里躺着的是我学习技术的一些笔记
+Enjoying writing and coding.
 
 ## 笔记列表
 1. 核心技术
