@@ -7,6 +7,7 @@ Enjoying writing and coding.
 2. 扩展技术
 - [Regular Expression](article/RegularExpression.md)
 - [JSON](article/JSON.md)
+- [Ajax](article/Ajax.md)
 3. 工程开发
 - [Git](article/Git.md)
 - [npm](article/npm.md)
