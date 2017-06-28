@@ -1,15 +1,17 @@
 # memo
 Enjoying writing and coding.
 
-## Part 1 核心技术
+## Structure
 
-## Part 2 扩展技术
+### Part 1 核心技术
+
+### Part 2 扩展技术
 - [Node](article/Node.md)
 - [Regular Expression](article/RegularExpression.md)
 - [JSON](article/JSON.md)
 - [Ajax](article/Ajax.md)
 
-## Part 3 工程开发
+### Part 3 工程开发
 - [Git](article/Git.md)
 - [npm](article/npm.md)
 - [Sass](article/Sass.md)
@@ -17,7 +19,7 @@ Enjoying writing and coding.
 - [Command Line](article/CommandLine.md)
 - [Sublime Text](article/SublimeText.md)
 
-## Part 4 编程思想
+### Part 4 编程思想
 - [Computer System](article/ComputerSystem.md)
 - [RESTful](article/RESTful.md)
 - [MV* Pattern](article/MV*Pattern.md)
