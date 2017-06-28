@@ -17,6 +17,7 @@ Enjoying writing and coding.
 - [Command Line](article/CommandLine.md)
 - [Sublime Text](article/SublimeText.md)
 4. 编程思想
+- [Computer System](article/ComputerSystem.md)
 - [RESTful](article/RESTful.md)
 - [MV* Pattern](article/MV*Pattern.md)
 
