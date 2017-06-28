@@ -1,5 +1,5 @@
 # memo
-Enjoying writing and coding.
+Enjoying writing and coding. For more details: [GitHub Repo](https://github.com/Brant-Ma/memo)
 
 ## Structure
 
@@ -24,5 +24,7 @@ Enjoying writing and coding.
 - [RESTful](article/RESTful.md)
 - [MV* Pattern](article/MV*Pattern.md)
 
-## License
-MIT
+## License & Information
+The project is under MIT license.
+The author is [Brant](https://github.com/Brant-Ma)
+For more information: [GitHub Repo](https://github.com/Brant-Ma/memo)
