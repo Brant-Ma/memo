@@ -1,5 +1,8 @@
 # memo
-Enjoying writing and coding. For more details: [GitHub Repo](https://github.com/Brant-Ma/memo)
+
+Enjoying writing and coding
+
+For more details: [GitHub Repo](https://github.com/Brant-Ma/memo)
 
 ## Structure
 
@@ -25,6 +28,9 @@ Enjoying writing and coding. For more details: [GitHub Repo](https://github.com/
 - [MV* Pattern](article/MV*Pattern.md)
 
 ## License & Information
-The project is under MIT license.
+
+The project is under MIT license
+
 The author is [Brant](https://github.com/Brant-Ma)
+
 For more information: [GitHub Repo](https://github.com/Brant-Ma/memo)
