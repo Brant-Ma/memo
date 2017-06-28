@@ -1,5 +1,4 @@
 # memo
-Enjoying writing and coding.
 
 ## Part 1 核心技术
 
@@ -21,6 +20,3 @@ Enjoying writing and coding.
 - [Computer System](article/ComputerSystem.md)
 - [RESTful](article/RESTful.md)
 - [MV* Pattern](article/MV*Pattern.md)
-
-## License
-MIT
