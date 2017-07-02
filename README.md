@@ -24,6 +24,7 @@ For more details: [GitHub Repo](https://github.com/Brant-Ma/memo)
 
 ### Part 4 编程思想
 - [Computer System](article/ComputerSystem.md)
+- [Design Pattern](article/DesignPattern.md)
 - [RESTful](article/RESTful.md)
 - [MV* Pattern](article/MV*Pattern.md)
 
