@@ -11,6 +11,7 @@
 ## Part 3 工程开发
 - [Git](article/Git.md)
 - [npm](article/npm.md)
+- [Electron](article/Electron.md)
 - [Sass](article/Sass.md)
 - [Gulp](article/Gulp.md)
 - [Command Line](article/CommandLine.md)
