@@ -7,6 +7,7 @@ For more details: [GitHub Repo](https://github.com/Brant-Ma/memo)
 ## Structure
 
 ### Part 1 核心技术
+- [DOM](article/DOM.md)
 
 ### Part 2 扩展技术
 - [Node](article/Node.md)

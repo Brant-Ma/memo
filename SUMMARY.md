@@ -1,6 +1,7 @@
 # memo
 
 ## Part 1 核心技术
+- [DOM](article/DOM.md)
 
 ## Part 2 扩展技术
 - [Node](article/Node.md)
