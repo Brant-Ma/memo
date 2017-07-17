@@ -11,11 +11,11 @@
 	- [Git](article/Git.md)
 	- [npm](article/npm.md)
 	- [Electron](article/Electron.md)
+	- [Command Line](article/CommandLine.md)
 	- [ESLint](article/ESLint.md)
 	- [Sass](article/Sass.md)
 	- [Gulp](article/Gulp.md)
-	- [Command Line](article/CommandLine.md)
-	- [Sublime Text](article/SublimeText.md)
+	- [Editor](article/Editor.md)
 - 编程思想
 	- [Computer System](article/ComputerSystem.md)
 	- [Design Pattern](article/DesignPattern.md)
