@@ -208,3 +208,225 @@ ES6 在字符串方面引入的最大改进是模板字面量（template literal
 	console.log(msgTwo)  // 'multiline\\nstring'
 
 可以看出，转义字符是以原始形式返回的：作为换行字符的 `\n` 的代码形式是一个 `\` 字符和一个 `n` 字符，即 `\\n` 的原始形式。
+
+### 3. Function
+
+JS 函数在调用时的参数数量可以不同于声明时的参数数量。如果调用时提供的参数过多，通常没有太大的影响；如果调用时提供的参数过少，则需要考虑使用默认值。ES6 提供了既安全又简洁的初始化方式来提供默认参数：
+
+	// 不安全
+	function request(url, cb) {
+	  cb = cb || function(data) { console.log(data) }
+	}
+	// 太繁琐
+	function request(url, cb) {
+	  cb = (typeof cb !== 'undefined') ? cd : function(data) { console.log(data) }
+	}
+	// ES6 方式
+	function request(url, cb = function(data) { console.log(data) }) {
+	}
+
+默认参数触发的条件是：没有传入该参数，或者显式的传入 `undefined` 赋值给参数。通常在参数声明中，默认参数排列在非默认参数的后面，但其实可以给任意参数指定默认参数，因为显式传入 `undefined` 可以保证占位，避免后面的非默认参数无法传入。
+
+如果使用默认参数，`arguments` 对象将立即与具名参数分离，更不会反映具名参数后续的变化。即 `arguments` 对象将始终反映初始的调用状态。
+
+	function func(a, b = 1) {
+	  console.log(arguments[0] === a)
+	  console.log(arguments[1] === b)
+	  a = 2
+	  b = 2
+	  console.log(arguments[0] === a)
+	  console.log(arguments[1] === b)
+	}
+
+	func()  // true false false false
+
+参数的默认值未必是基本类型的值，也可以是函数引用，或者函数调用。
+
+	let value = 5
+
+	function getValue = () => value++
+
+	function add = (one, two = getValue()) => one + two
+
+	add(1, 1)  // 2
+	add(1)     // 6
+	add(1)     // 7
+
+默认参数甚至也可以引用前面的参数：
+
+	function getValue = (value) => value + 5
+
+	function add = (one, two = getValue(one)) => one + two
+
+	add(1, 1)  // 2
+	add(1)     // 7
+	add(2)     // 9
+
+但是唯独不能引用后面的参数，因为存在暂时性死区：和块级绑定类似，参数声明会创建一个新的标识符绑定，在参数初始化之前不允许被访问。参数初始化过程发生在函数调用时，无论是给参数传递一个值，还是使用参数的默认值，都属于参数初始化：
+
+	function add = (one = two, two) => one + two
+
+	add(1, 1)          // 2
+	add(undefined, 1)  // 抛出错误
+
+函数调用时实际发生的初始化过程如下：
+
+	// 调用 add(1, 1)
+	let one = 1
+	let two = 1
+
+	// 调用 add(undefined, 1)
+	let one = two
+	let two = 1
+
+很明显，`one` 在进行初始化时，`two` 尚未被初始化，因此它处在暂时性死区内。另外，函数参数的作用域与函数体的作用域相分离，即参数无法访问函数体内声明的变量。
+
+前面提到，实参（arguments）的数目可以不同于形参（parameters）的数目。如果说默认参数（default parameters）让实参数目偏少时让代码书写更清晰，那么剩余参数（rest parameters）则可以让实参偏多时让代码书写更清晰。实际上，这是为了减少对 `arguments` 对象的依赖：
+
+	function pick(obj, ...args) {
+	  const = result = Object.create(null)
+
+	  for (let i = 0, len = args.length; i < len; i++) {
+	    result[args[i]] = obj[args[i]]
+	  }
+
+	  return result
+	}
+
+可以看出，剩余参数实际上表示的是其余参数组成的一个数组。剩余参数的限制条件有两个：函数只能有一个剩余参数，且必须被放在最后；不能在对象字面量的 setter 中使用，因为 setter 只能使用单个参数。
+
+在 `Function` 构造器中也可以使用默认参数和剩余参数了（尽管几乎没人用）。
+
+有一个与剩余参数十分类似的扩展运算符：与剩余参数相反（将多个参数合并为一个数组），扩展运算符是将一个数组分离为多个参数。实际上，它可以减少对 `apply()` 方法的依赖：
+
+	const arr = [1, 2, 3, 4]
+
+	// apply 方法
+	Math.max.apply(Math, arr)
+
+	// spread 运算：单独使用
+	Math.max(...arr)
+	// spread 运算：混合参数
+	Math.max(5, ...arr)
+
+由于 JS 中函数的形式千变万化，为了识别一个函数以方便在调用栈中调试（并不是用来获取对函数的引用），所有的函数都将有一个 `name` 属性。基本情况如下：
+
+	function a() { /* ... */ }
+
+	var b = function() { /* ... */ }
+
+	var c = function d() { /* ... */ }
+
+	a.name               // 'a'
+	b.name               // 'b'
+	c.name               // 'd'
+	d.name               // 引用错误
+	b.bind().name        // 'bound b'
+	c.bind().name        // 'bound d'
+	new Function().name  // 'anonymous'
+
+如果是对象中的 `getter` 或 `setter` 方法，则不能直接获取 `name` 属性：
+
+	var person = {
+	  get age() { return this.age },
+	  sayName: function() { console.log(this.name) }
+	}
+
+	person.sayName.name  // 'sayName'
+	Object.getOwnPropertyDescriptor(person, 'age').get.name  // 'get age'
+
+大部分函数具有两个内部方法：当函数不使用 `new` 进行调用时，`[[Call]]` 方法被执行并运行函数体内的代码；当函数使用 `new` 进行调用时，`[[Construct]]` 方法被执行并创建一个新的实例，函数体内的 `this` 指向这个新对象，并作为函数的返回值。
+
+在 JS 中通常使用首字母大写的函数名来说明它是个构造器，但这种约定并不靠谱。ES6 通过引入 `new.target` 元属性来消除这种函数调用方面的不确定性。元属性是指非对象上的属性，用来提供关联目标的附加信息。`new.target` 只能在函数内使用：
+
+	function Person(name) {
+	  if (new.target === Person) {
+	    this.name = name
+	  } else {
+	    throw new Error(`please use 'new' with Person`)
+	  }
+	}
+
+	var a = new Person('Tom')         // 正常
+	var b = Person('Tom')             // 出错
+	var c = Person.call(this, 'Tom')  // 出错
+
+在 ES6 之前，通常不推荐在代码块中声明函数（更好的选择是函数表达式），但现在也可以使用函数声明了。如果是严格模式，函数声明将被提升至代码块顶部（包括函数名和函数体），并在代码块执行完毕后被回收。非严格模式下，函数声明将被提升至所在函数（或全局环境）的顶部。
+
+箭头函数（arrow function）是一种新的函数风格。为了减少错误和不确定性，以及更好的引擎优化，箭头函数做了很多精简：没有 `this`、`super`、`arguments` 和 `new.target`，它们将有最靠近的非箭头函数来决定；不能更改 `this` 值；不能使用 `new` 调用；没有原型；不能有重复的具名参数。
+
+箭头函数语法很简单：参数，箭头，函数体。如果但不同的场景下，会有不同的变体：
+
+	// 函数体只有返回语句
+	const reflect = value => value
+
+	// 参数为空
+	const getName = () => 'es6'
+
+	// 多个参数，多条语句
+	const sum = (num1, num2) => {
+	  return num1 + num2
+	}
+
+	// 空函数
+	const empty = () => {}
+
+	// 返回对象
+	const getObject = (id, name) => ({ id: id, name: name })
+
+立即调用函数（IIFE）有两种括号包裹的方法。如果用箭头函数来写，将只有一种写法：
+
+	// 可以包裹后调用，或者调用后包裹
+	(function() { /* ... */ })()
+	(function() { /* ... */ }())
+
+	// 只能包裹后调用
+	(() => { /* ... */ })()
+
+没有 `this` 绑定其实可以避免很多错误。比如绑定事件监听时，回调函数中的 `this` 会被绑定在事件的目标对象上。如果用箭头函数，就能避免这种错误：
+
+	const handler = {
+	  id: '123'
+
+	  init: function() {
+	    document.addEventListener('click', () => {
+	      this.dosomething(event.type)
+	    }, false)
+	  }
+
+	  doSomething: function(type) {
+	    console.log(`handling ${type} for ${this.id}`)
+	  }
+	}
+
+由于箭头函数本身没有 `this`，因此会沿着作用域链查找，使用最近的非箭头函数的 `this` 值（`arguments` 对象同理）。因此 `this` 被绑定在 `handler` 对象上，而非 `document` 对象上。另外，尽管 `doSomething` 方法没有返回值，但由于函数体内只有一条语句，因此花括号其实可以省略。
+
+虽然箭头函数与普通函数有很多区别，但本质上仍是个函数。因此，也具有 `name` 属性；也能被 `typeof` 和 `instanceof` 识别；也能使用 `call()`、`apply()` 和 `bind()`（但不影响 `this` 绑定）。箭头函数最大的用途在于替代匿名函数，尤其是回调函数，比如各种数组方法。
+
+最后，JS 引擎对函数进行了尾调用优化。像普通的函数调用一样，尾调用也会创建新的栈帧（stack frame）然后压入调用栈（call stack）中。由于所有的栈帧都被保留在内存中，如果调用栈过大会导致栈溢出，尤其是尾递归的情况下。
+
+严格模式下，引擎可以进行尾调用优化：发生尾调用时，不再创建新的栈帧，而是清空当前栈帧后再次使用它。但尾调用优化的条件也十分苛刻：
+
+	// 未优化：尾调用的结果需要作为当前函数的返回值
+	function one() { another() }
+
+	// 未优化：尾调用返回后不能有额外操作
+	function one() { return 1 + another() }
+
+	// 未优化：调用不在尾部
+	function one() {
+	  var result = another()
+	  return result
+	}
+
+	// 未优化：尾调用函数不能是闭包（不能引用当前栈帧中的变量）
+	function one() {
+	  var val = 1
+	  var another = () => val
+	  return another()
+	}
+
+只有真正的尾调用才会被优化：
+
+	// 被优化
+	function one() { return another() }
