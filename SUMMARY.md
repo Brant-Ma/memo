@@ -2,7 +2,7 @@
 
 - 核心技术
   - [ECMAScript 6](article/ECMAScript6.md)
-	- [DOM](article/DOM.md)
+  - [DOM](article/DOM.md)
 - 扩展技术
 	- [Node](article/Node.md)
 	- [Regular Expression](article/RegularExpression.md)
