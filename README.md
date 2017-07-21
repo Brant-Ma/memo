@@ -7,6 +7,7 @@ For more details: [GitHub Repo](https://github.com/Brant-Ma/memo)
 ## Structure
 
 ### Part 1 核心技术
+- [ECMAScript 6](article/ECMAScript6.md)
 - [DOM](article/DOM.md)
 
 ### Part 2 扩展技术
