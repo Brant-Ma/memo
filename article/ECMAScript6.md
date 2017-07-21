@@ -69,3 +69,142 @@
 	console.log('world' in window)  // true
 
 块级绑定的最佳实践是不使用 `var`，默认情况下使用 `const`，只有在知道变量值需要被更改时才使用 `let`。
+
+### 2. String & Regular Expression
+
+JS 的字符串一直以来都是以 16 位字符编码方式为基础的：每 16 bit 作为一个码元（code unit），用以表示一个字符。Unicode 为世界上所有的字符提供全局的唯一标识符，即代码点（code point）。由于 Unicode 在多语言基本平面外增加了扩展平面，单个 16 位的码元已经无法表示所有的代码点。
+
+解决方式是允许两个 16 位码元来表示单个代码点。比如 Unicode 字符 `𠮷` 实际上是两个 16 位的字符，所以原来针对 16 位的操作，将出现很多正确但不合理的情况：
+
+	var text = '𠮷'
+	console.log(text.length);         // 2
+	console.log(/^.$/.test(text));    // false
+	console.log(text.charAt(0));      // ''
+	console.log(text.charAt(1));      // ''
+	console.log(text.charCodeAt(0));  // 55362
+	console.log(text.charCodeAt(1));  // 57271
+
+ES6 针对这些问题，提供了很多新的针对 32 位的字符串方法来应对。`codePointAt()` 方法接收字符串中 16 位码元的位置并返回代码点。如果该位置本身就是 16 位字符，或者是 32 位字符的后半部分，则返回值与 `charCodeAt()` 一致；如果该位置是 32 位字符的前半部分，则返回完整的代码点：
+
+	const is32Bit = (c) => c.codePointAt(0) > 0xffff
+
+	console.log(is32Bit('𠮷'))        // true
+	console.log('𠮷'.codePointAt(0))  // 134071
+	console.log('𠮷'.codePointAt(1))  // 57271
+
+另外，`String.fromCodePoint()` 可以视为 `String.fromCharCode()` 的完善版本，或者说是 `codePointAt()` 的相反操作。
+
+内容相同的字符可以有不同的代码点，比如 `æ` 和 `ae`，但是直接比较并不会相等。必须先用`normalized()` 方法可以将字符标准化为相同的形式。
+
+正则表达式也是基于 16 位码元来表示单个字符的。使用 `u` 标志可以将工作模式切换到针对代码点而非码元：
+
+	const codePointLength = (text) => {
+	  var result = text.match(/[\s\S]/gu)
+	  return result ? result.length : 0
+	}
+
+	console.log(codePointLength('𠮷'))  // 1
+
+使用 `u` 标志前提前检查可用性也很有必要（稍微修改后也可以用于检测新的 `y` 标志）：
+
+	const hasRegExpU = () => {
+	  try {
+	    var pattern = new RegExp('.', 'u')
+	    return true
+	  } catch (ex) {
+	    return false
+	  }
+	}
+
+甚至还可以分别获取正则表达式的模式和标志：
+
+	const reg = /abcde/imguy
+
+	console.log(reg.source)  // 'abcde'
+	console.log(reg.flags)   // 'gimuy'
+
+使用 `str.indexOf(substr) !== -1` 来判断 `str` 包含 `substr` 很不语义。新的方式是使用 `includes()` 方法，`startsWith()` 方法和 `endsWith()` 方法。它们的第一个参数是子串，第二个参数是首次匹配的索引位置，返回布尔值。
+
+只有需要确切位置，或者需要使用正则表达式时才使用 `indexOf()` 方法和 `lastIndexOf()` 方法。另外，新的 `repeat()` 方法可以将字符串重复固定的次数，返回一个新字符串。
+
+ES6 在字符串方面引入的最大改进是模板字面量（template literal）。它提供了领域专用语言（domain-specific language）的语法，用于解决一些特殊的问题。模板字面量使用一对 ````` 来包裹内容，且无需对 `'` 或 `"` 转义（但 ````` 肯定是需要转义的）。
+
+此前如果想要创建多行字符串，需要一些奇怪的方式。
+
+	const msg = ['multiline', 'string'].join('\n')
+
+	const msg = 'multiline\n' + 'string'
+
+现在可以直接在模板字面量中换行了。不过要注意缩进的问题：
+
+	const msg = `multiline
+	string`
+
+	const msg = `multiline\nstring`
+
+	const html = `
+	<div>
+	  <p>paragragh</p>
+	</div>`.trim()
+
+模板字面量的特点在于可以在 `${` 和 `}` 之间放入 JS 表达式，这被称为替换位。无论是变量、计算、函数调用，都可以放进替换位中。甚至可以嵌入另一个模板字面量（因为模板字面量本身也是表达式）：
+
+	const name = 'world'
+	const msg = `hello, ${name}`
+
+模板字面量最强大的功能是模板标签（template tag）。标签是在模板的第一个 ````` 之前被指定的函数。标签函数在调用时会接收模板字面量数据，并划分为独立片段，然后组合这些信息片段来输出最终的字符串。对于一个模板标签，其标签函数的形态如下：
+
+	const msg = tag`hello, world!`
+
+	function tag(literals, ...substitutions) { /* ... */ }
+
+其中，`literals` 是个数组，包含了被替换位隔开的字面量字符串，`substitutions` 是剩余参数数组，包含了替换位的解释值。可以得知，`literals.length === substitutions.length + 1`。如果用标签函数来模拟模板字面量默认的转换操作，模拟实现将大致如下：
+
+	function defaultTag(literals, ...substitutions) {
+	  let result = ''
+
+	  for (let i = 0; i < substitutions.length; i++) {
+	    result += literals[i]
+	    result += substitutions[i]
+	  }
+
+	  result += literals[literals.length - 1]
+	  return result
+	}
+
+可以看出模板字面量的默认标签行为是：交替拼接两个数组中的元素，最终创建出完整的结果字符串。需要注意的是，如果替换位是位于模板字面量的开始或结束，那么 `literals[0]` 或 `literals[literals.length - 1]` 的值是空字符串。此外，`literals` 数组元素的值一定是字符串，但 `substitutions` 数组元素的值则由替换位的解释结果决定。
+
+	const product = 'AirPods'
+	let price = 159
+	let taxRate = 0.17
+	let exchangeRate = 6.925
+	const rmb = price * (1 + taxRate) * exchangeRate
+
+	let msg = `The ${product} costs ￥${parseInt(rmb)} in China.`
+	console.log(msg)  // 'The AirPods costs ￥1288 in China'
+
+针对上面的例子，`literals` 数组的元素值分别为：`'The '`、`' costs ￥'` 和 `' in China.'`，而 `substitutions` 数组的元素值分别为 `'AirPods'` 和 `1288`。
+
+其实模板标签也可以访问字符串的原始信息，即转义之前的形式。具体而言，原始信息是存放在 `literal.raw` 属性里，即 `literal[i]` 的原始信息存放在 `literal.raw[i]` 中。内置的 `String.raw()` 标签默认具有获取原始字符串值的功能，模拟实现如下：
+
+	function rawTag(literals, ...substitutins) {
+	  let result = ''
+
+	  for (let i = 0; i < substitutions.length; i++) {
+	    result += literals.raw[i]
+	    result += substitutions[i]
+	  }
+
+	  result += literal.raw[literal.length - 1]
+	  return result
+	}
+
+具体的使用上，`rawTag()` 与 `String.raw()` 是等价的：
+
+	const msgOne = rawTag`multiline\nstring`
+	const msgTwo = String.raw`multiline\nstring`
+
+	console.log(msgOne)  // 'multiline\\nstring'
+	console.log(msgTwo)  // 'multiline\\nstring'
+
+可以看出，转义字符是以原始形式返回的：作为换行字符的 `\n` 的代码形式是一个 `\` 字符和一个 `n` 字符，即 `\\n` 的原始形式。
