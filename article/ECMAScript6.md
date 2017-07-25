@@ -1,15 +1,21 @@
 ## ECMAScript 6
 > ES6 跟 ES5 比起来就像是另一门语言
 
-尼古拉斯的 Understanding ES6 都快第二版了，但国内第一版还没出来。那就不等啦。
-
-笔记目录
+尼古拉斯的 Understanding ES6 都快第二版了，但国内第一版还没出来。那就不等啦。笔记目录如下：
 
 1. [Block Binding](#block-binding)
-2. [String and Regular Expression](#string-and-regular-expression)
+2. [String & Regular Expression](#string-and-regular-expression)
 3. [Function](#function)
 4. [Object](#object)
 5. [Destructuring](#destructuring)
+6. [Symbol & Symbol Property](#symbol-and-symbol-property)
+7. [Set & Map](#set-and-map)
+8. [Iterator & Generator](#iterator-and-generator)
+9. [Class](#class)
+10. [Array](#array)
+11. [Promise & Asynchronous Programming](#promise-and-asynchronous-programming)
+12. [Proxy & Reflection](#proxy-and-reflection)
+13. [Module](#module)
 
 ### Block Binding
 
@@ -783,3 +789,22 @@ function setCookie(key, value,
   // ...
 }
 ```
+
+### Symbol and Symbol Property
+
+### Set and Map
+
+### Iterator and Generator
+
+### Class
+
+### Array
+
+### Promise and Asynchronous Programming
+
+### Proxy and Reflection
+
+### Module
+
+### 参考
+1.[Understanding ECMAScript 6 - Nicholas C. Zakas | translated by sagittarius-rev](https://sagittarius-rev.gitbooks.io/understanding-ecmascript-6-zh-ver/content/)
