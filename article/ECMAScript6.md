@@ -3,7 +3,15 @@
 
 尼古拉斯的 Understanding ES6 都快第二版了，但国内第一版还没出来。那就不等啦。
 
-### 1. Block Binding
+笔记目录
+
+1. [Block Binding](#block-binding)
+2. [String and Regular Expression](#string-and-regular-expression)
+3. [Function](#function)
+4. [Object](#object)
+5. [Destructuring](#destructuring)
+
+### Block Binding
 
 使用 `var` 声明的变量，其声明部分会被提升至所在作用域的顶部。在没有块级作用域的情况下，变量提升（hoisting）会带来很多麻烦。因此 ES6 引入了块级作用域来改进。
 
@@ -84,7 +92,7 @@ console.log('world' in window)  // true
 
 块级绑定的最佳实践是不使用 `var`，默认情况下使用 `const`，只有在知道变量值需要被更改时才使用 `let`。
 
-### 2. String & Regular Expression
+### String and Regular Expression
 
 JS 的字符串一直以来都是以 16 位字符编码方式为基础的：每 16 bit 作为一个码元（code unit），用以表示一个字符。Unicode 为世界上所有的字符提供全局的唯一标识符，即代码点（code point）。由于 Unicode 在多语言基本平面外增加了扩展平面，单个 16 位的码元已经无法表示所有的代码点。
 
@@ -249,7 +257,7 @@ console.log(msgTwo)  // 'multiline\\nstring'
 
 可以看出，转义字符是以原始形式返回的：作为换行字符的 `\n` 的代码形式是一个 `\` 字符和一个 `n` 字符，即 `\\n` 的原始形式。
 
-### 3. Function
+### Function
 
 JS 函数在调用时的参数数量可以不同于声明时的参数数量。如果调用时提供的参数过多，通常没有太大的影响；如果调用时提供的参数过少，则需要考虑使用默认值。ES6 提供了既安全又简洁的初始化方式来提供默认参数：
 
@@ -503,7 +511,7 @@ function one() {
 function one() { return another() }
 ```
 
-### 4. Object
+### Object
 
 ES6 明确了对象的类别：
 
@@ -597,3 +605,181 @@ relative.say()  // 'hello, world!'
 - 在原型中查找同名方法，创建 `this` 绑定后调用它，即执行 `person.say.call(this)`
 
 另外，对象字面量中的重复属性名不会再抛错，而是直接后者覆盖前者。
+
+### Destructuring
+
+对象和数组的字面量是 JS 中最常用的表示法，而解构可以使它们分解为更小的部分，从而简化数据的提取过程。
+
+对象的解构赋值本质上是将对象的同名属性赋值给本地变量。可以用在任何期望有个值的位置：
+
+```javascript
+const person = {
+  name: 'Cook',
+  age: 40
+}
+
+// 用于变量声明
+let { name, age } = person
+
+// 用于变量赋值
+({ name, age }) = person
+
+// 用于传递参数
+someFunc({ name, age } = person)
+```
+
+如果没有找到同名属性，左侧的本地变量将被赋值为 `undefined`。此时可以选择使用一个默认值，该默认值会在对应属性缺失（或对应属性值是 `undefined`）时生效：
+
+```javascript
+const person = { name: 'Cook' }
+
+const { name, age = 40 } = person
+```
+
+解构赋值的属性和变量是同名的，但其实也可以使用不同的变量名。冒号前的标识符表示赋值位置，冒号后的标识符表示赋值目标：
+
+```javascript
+const person = { name: 'Cook' }
+
+// 使用不同的变量名
+const { name: localName, age: localAge} = person
+
+// 使用不同的变量名，同时设定默认值
+const { name: localName, age: localAge = 40} = person
+
+console.log(localName)  // 'Cook'
+console.log(localAge)   // 40
+```
+
+最复杂也最强大的结构赋值是嵌套语法，它可以深入到对象的内部结构中去提取数据。需要注意的是，必须区分赋值的位置和目标。解构语法中，冒号前的标识符表示位置，冒号后的标识符表示目标，而花括号表示目标在下一层：
+
+```javascript
+const profile = {
+  name: 'Cook',
+  location: {
+    country: 'US',
+    city: 'California'
+  }
+}
+
+// 将 profile.location.city 赋值给 place
+const { location: { city: place } } = profile
+```
+
+需要注意的是，解构赋值表达式的右侧不允许是 `null` 或 `undefined`，否则会报错。左侧的赋值目标也最好不要是空的花括号，尽管不会报错（但什么都不会发生）。
+
+数组解构的语法与对象解构十分类似。不过因为数组没有具名属性，所以会直接作用在位置上，而变量名则没有要求。可以借助占位的方式来提取相应位置的值：
+
+```javascript
+const fruit = ['apple', 'banana', 'orange']
+
+// 将 'banana' 赋值给 lunch
+let [, lunch] = fruit
+
+// 将 'apple' 赋值给 lunch
+[lunch] = fruit
+```
+
+排序算法中经常用到互换变量值。数组解构可以在避免使用临时变量的情况下实现，原理是等号右侧创建了临时数组：
+
+```javascript
+let a = 1
+let b = 2
+
+[a, b] = [b, a]
+```
+
+默认值和嵌套也同样可以用在数组的解构赋值中。其中方括号和逗号用于定位：
+
+```javascript
+const arr = ['one', ['two', 'three'], 'four']
+
+// 将 'two' 赋值给 num1，将 'five' 赋值给 num2
+const [, [num1], , num2 = 'five'] = arr
+```
+
+数组解构中可以使用一个叫做剩余项（类似于剩余参数）的方式，可以将某位置后的所有剩余项目赋值给一个变量。主要功能是取出特定位置的项后，保留剩余的项：
+
+```javascript
+let arr = [1, 2, 3, 4]
+
+const [, item, ...restItem] = arr
+
+console.log(item)      // 2
+console.log(restItem)  // [3, 4]
+```
+
+需要注意的是，剩余项必须是解构语法中的最后一项（即之后不允许有逗号出现）。剩余项的常见用途是拷贝数组：
+
+```javascript
+const arr = [1, 2, 3, 4]
+
+// 多种克隆数组的方式
+const clone1 = arr.slice()
+const clone2 = arr.concat()
+const [...clone3] = arr
+```
+
+对象和数组混合而成的解构中，可以使用混合解构。这对于提取 JSON 数据来说会十分方便：
+
+```javascript
+const profile = {
+  name: 'Cook',
+  location: {
+    country: 'US',
+    city: 'California'
+  },
+  friends: ['Jobs', 'Ive']
+}
+
+let {
+  location: { city: place },
+  friends: [, designer]
+} = profile
+
+console.log(place)     // 'California'
+console.log(designer)  // 'Ive'
+```
+
+当函数需要接收大量可选参数时，可以使用参数解构。这在此前会十分麻烦，而且无法反映具体的参数项。使用参数解构后，就可以分离必需参数和可选参数，并且明确了可选参数的项。
+
+```javascript
+setCookie('name', 'Cook', {
+  secure: false,
+  expires: 10000
+})
+
+// 普通方式
+function setCookie(key, value, options) {
+  // 接收 options
+  opts = options || {}
+
+  let secure = opts.secure
+  let domain = opts.domain
+  let path = opts.path
+  let expires = opts.expires
+
+  // ...
+}
+
+// 参数解构
+function setCookie(key, value, { secure, domain, path, expires }) {
+  // ...
+}
+```
+
+如果调用时未提供可选参数的某项，将被设定为 `undefined`（在解构语法的等号右侧没有查找到对应项）；如果调用时未提供可选参数，将会报错（解构语法的等号右侧不能是 `null` 或 `undefined`）。因此最佳方案是提供完整的默认值：
+
+```javascript
+// 包含完整默认值的参数解构
+function setCookie(key, value,
+  {
+    secure = false,
+    domain = '/',
+    path = 'es6.com',
+    expires = 999999999
+  } = {}
+) {
+  // ...
+}
+```
