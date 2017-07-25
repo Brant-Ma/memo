@@ -27,6 +27,7 @@ For more details: [GitHub Repo](https://github.com/Brant-Ma/memo)
 - [Editor](article/Editor.md)
 
 ### Part 4 编程思想
+- [Data Structure and Algorithm](article/DataStructureAndAlgorithm.md)
 - [Computer System](article/ComputerSystem.md)
 - [Design Pattern](article/DesignPattern.md)
 - [RESTful](article/RESTful.md)

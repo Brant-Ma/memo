@@ -18,6 +18,7 @@
 	- [Gulp](article/Gulp.md)
 	- [Editor](article/Editor.md)
 - 编程思想
+  - [Data Structure and Algorithm](article/DataStructureAndAlgorithm.md)
 	- [Computer System](article/ComputerSystem.md)
 	- [Design Pattern](article/DesignPattern.md)
 	- [RESTful](article/RESTful.md)
