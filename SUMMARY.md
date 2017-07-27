@@ -14,6 +14,7 @@
   - [Electron](article/Electron.md)
   - [Command Line](article/CommandLine.md)
   - [ESLint](article/ESLint.md)
+  - [Mocha](article/Mocha.md)
   - [Sass](article/Sass.md)
   - [Gulp](article/Gulp.md)
   - [Editor](article/Editor.md)
