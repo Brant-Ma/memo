@@ -15,6 +15,7 @@
   - [Command Line](article/CommandLine.md)
   - [ESLint](article/ESLint.md)
   - [Mocha](article/Mocha.md)
+  - [Continuous Integration](article/ContinuousIntegration.md)
   - [Sass](article/Sass.md)
   - [Gulp](article/Gulp.md)
   - [Editor](article/Editor.md)
