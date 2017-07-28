@@ -36,13 +36,14 @@
 Travis CI 是比较流行的 CI 服务提供者。集成步骤也十分精简：
 
 - 使用 GitHub 登陆并授权 Travis CI
-- 选择需要集成的代码仓库
-- 在本地添加 `.travis.yml` 文件
-- 将本地修改 push 到远程仓库
+- 添加需要被 travis 管理的项目
+- 为该项目添加 `.travis.yml` 文件
+- 将代码 push 到远程仓库
 
-可以看出，最主要的工作就是添加 `.travis.yml` 配置文件。然而这个文件出乎意料的简单：
+可以看出，最主要的工作就是添加配置文件。然而这个文件出乎意料的简单：
 
 ```yaml
+// .travis.yml
 language: node_js
 node_js:
   - "5"
@@ -51,7 +52,7 @@ install: npm install
 script: npm test
 ```
 
-这是 JavaScript 的基本配置写法。如果所有的依赖都列入了 `package.jon` 中，而且测试脚本也是按默认写法加入 `scripts` 字段的，那么最后两行可以省略，因为 Travis 会默认执行 `npm install` 和 `npm test`。
+这是基本的配置写法。如果所有的依赖都列入了 `package.jon` 中，而且测试脚本也是按默认写法加入 `scripts` 字段的，那么最后两行可以省略，因为 Travis 会默认执行 `npm install` 和 `npm test`。
 
 push 之后 就可以等待集成结果了。不出意外的话，几分钟之内就会收到邮件提醒，或者直接在[页面](https://travis-ci.org)里查看。
 
@@ -63,7 +64,10 @@ push 之后 就可以等待集成结果了。不出意外的话，几分钟之�
 
 ### 参考
 
-[Shields.io: Quality metadata badges for open source projects](http://shields.io/)
-[持续集成是什么？ - 阮一峰的网络日志](http://www.ruanyifeng.com/blog/2015/09/continuous-integration.html)
-[Building a Node.js project - Travis CI](https://docs.travis-ci.com/user/languages/javascript-with-nodejs/)
-[聊一聊前端自动化测试 - 天镶](https://segmentfault.com/a/1190000004558796)
+1. [持续集成是什么？ - 阮一峰的网络日志](http://www.ruanyifeng.com/blog/2015/09/continuous-integration.html)
+2. [Building a Node.js project - Travis CI](https://docs.travis-ci.com/user/languages/javascript-with-nodejs/)
+3. [聊一聊前端自动化测试 - 天镶](https://segmentfault.com/a/1190000004558796)
+4. [前端开源项目持续集成三剑客 - cxtom](http://efe.baidu.com/blog/front-end-continuous-integration-tools/)
+5. [前端持续集成解决方案 - DiscipleD](https://zhuanlan.zhihu.com/p/23093540)
+6. [Shields.io: Quality metadata badges for open source projects](http://shields.io/)
+7. [GitHub 项目徽章的添加和设置 - EyreFree](https://lpd-ios.github.io/2017/05/03/GitHub-Badge-Introduction/)
