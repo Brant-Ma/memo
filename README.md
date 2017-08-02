@@ -8,6 +8,7 @@ For more details: [GitHub Repo](https://github.com/Brant-Ma/memo)
 
 ### Part 1 核心技术
 - [ECMAScript 6](article/ECMAScript6.md)
+- [HTML Core](article/HTMLCore.md)
 - [DOM](article/DOM.md)
 
 ### Part 2 扩展技术
