@@ -8,23 +8,23 @@ JSON 的构建基于两种基本的数据结构：对象和数组。
 
 object 是无序的键值对的集合：
 
-![object](../image/JSON-1.gif)
+![object](../image/json-object.gif)
 
 array 是有序的值的集合：
 
-![array](../image/JSON-2.gif)
+![array](../image/json-array.gif)
 
 object 和 array 中的值，可以是基本数据类型，也可以是 object 和 array，各个结构也支持嵌套：
 
-![value](../image/JSON-3.gif)
+![value](../image/json-value.gif)
 
 string 必须使用双引号来表示：
 
-![string](../image/JSON-4.gif)
+![string](../image/json-string.gif)
 
 number 不能是八进制或十六进制：
 
-![number](../image/JSON-5.gif)
+![number](../image/json-number.gif)
 
 其他的隐式约束还有：对象的键也是字符串，因此也只能使用双引号；对象和数组的最后一个值后不允许使用逗号；值的类型并不支持 undefined 和 function；不支持注释语法。
 

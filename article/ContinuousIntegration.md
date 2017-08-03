@@ -58,7 +58,7 @@ push 之后 就可以等待集成结果了。不出意外的话，几分钟之�
 
 集成结果有两种：failed 或 passed。如果是前者，那就根据构建日志定位问题并修复；如果是后者，那就可以继续开发新特性了。
 
-![build passing](../image/ContinuousIntegration-1.jpg)
+![build passing](../image/build-passing.jpg)
 
 当然，构建成功后可以斩获一枚构建状态的徽章，放在 repo 的 `README` 页面里还是很有成就感的。
 

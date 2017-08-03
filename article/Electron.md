@@ -182,7 +182,7 @@ Dock 栏的图标右键后是可以有自定义菜单的，本质上就是给 ma
 
 效果如下（搭配壁纸感觉很有趣）：
 
-![Dock Menu](../image/Electron-1.jpg)
+![Dock Menu](../image/electron-dock-menu.jpg)
 
 
 ### 参考
