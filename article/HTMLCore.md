@@ -220,7 +220,104 @@ HTML5 元素的基本理念是将语义与呈现分离。元素的选用原则�
 
 ### Form Level Element
 
-有点复杂，稍后总结。
+表单相关的元素有：
+
+- `form`：在页面中定义一个表单。
+  - 使用 `name` 属性与其他 `form` 相区别
+  - 使用 `action` 属性指定数据的接收 URL，如果是相对 URL 则会基于解析基准。默认值是当前文档的 URL
+  - 使用 `method` 属性指定 HTTP 方法，可以是 `get` 或 `post`。默认值是 `get`
+  - 使用 `enctype` 属性指定提交数据采用的编码，上传文件需要设为 `multipart/form-data`。默认值可以胜任除上传文件外的其他所有需求
+  - 使用 `autocomplete` 属性将允许浏览器自动填表，可以是 `on` 或 `off`。默认值是 `on`
+  - 使用 `target` 属性指定提交表单后的反馈信息显示页。默认值是 `_self`
+  - 其他属性： `accept-charset`（一般不用）；
+- `label`：为表单元素添加说明标签，可独立于表单元素，或包含表单元素
+  - 使用 `for` 属性关联一个表单元素，值与需要关联的表单元素 `id` 值相同
+- `fieldset`：为表单元素分组
+  - 使用 `disabled` 属性禁用整组表单元素
+  - 其他属性：`name`、`form`
+- `legend`：为分组添加说明标签，必须是 `fieldset` 的第一个子元素
+- `button`：具有多种功能的按钮
+  - 使用 `type` 属性指定按钮的功能，默认值是 `submit`
+    - 如果类型为 `submit`，按钮用于提交表单。具有以下可以覆盖 `form` 属性的属性：`formaction`、`formenctype`、`formmethod`、`formtarget`、`formnovalidate`（禁止表单验证，直接提交表单）
+    - 如果类型为 `reset`，按钮用于重置表单
+    - 如果类型为 `button`，按钮不具有特定功能，但可以与脚本配合使用
+  - 其他属性：`name`、`form`、`value`、`disabled`、`autofocus`
+- `datalist`：提供一组数据列表，包含 `option` 元素
+- `select`：生成一组选项列表，包含 `option` 元素或 `optgroup` 元素
+  - 使用 `mulitiple` 属性提供单次可选择多个选项的能力
+  - 使用 `size` 属性设定显示的选项个数
+  - 其他属性：`name`、`form`、`disabled`、`autofocus`、`required`
+- `option`：提供一个数据选项
+  - 使用 `value` 属性设定被选中时所提供的数据值
+  - 使用 `label` 属性提供一条说明信息。说明信息也可以直接写在元素内容里
+  - 使用 `selected` 属性设定默认被选中的项
+  - 其他属性：`disabled`
+- `optgroup`：对 `option` 进行分组
+  - 使用 `label` 属性为整组选项提供小标题
+  - 使用 `disabled` 属性阻止选择组内的任何选项
+- `textarea`：可用于输入多行文本
+  - 使用 `rows` 属性和 `cols` 属性设定文本框的行列的字符数
+  - 使用 `wrap` 属性设定（提交表单时）插入换行符的方式
+    - 如果值为 `hard`，则每行字符后强制换行，需配合 `cols` 使用
+    - 如果值为 `soft`，则每行字符后不换行，默认值即为 `soft`
+  - 其他属性：`name`、`form`、`disabled`、`readonly`、`required`、`autofocus`、`maxlength`、`dirname`、`placeholder`
+- `output`：用于表示计算结果
+  - 使用 `for` 属性声明计算对象，多个对象则用空格隔开
+  - 其他属性：`name`、`form`
+- `keygen`：用于生成一对密钥，并在提交表单时将公钥和密钥管理口令（如果有的话）发给服务器
+  - 使用 `keytype` 属性指定生成密钥的算法
+  - 使用 `challenge` 属性指定密钥管理口令
+  - 其他属性：`name`、`form`、`disabled`、`autofocus`
+
+表单元素中最复杂的元素是 `input`，它用于收集用户输入的数据。基本属性有：
+
+- 使用 `type` 属性声明具体类型，默认是 `text`
+- 使用 `name` 属性表明表单内的数据需要被提交
+- 使用 `form` 属性可关联表单后独立于表单，值要与 `form` 的 `id` 值相同
+- 使用 `autocomplete` 属性覆盖整个 `form` 的设定
+- 使用 `autofocus` 属性自动聚焦表单元素，页面中只有最后一个自动聚焦设定是有效的
+- 使用 `disabled` 属性禁用表单元素，通常会影响表单的外观，其数据将不会被发送到服务器
+
+当 `input` 具有不同的 `type` 属性值时，会具有不同的功能和属性：
+
+- 如果类型为 `text`，可用于输入单行文本
+  - 使用 `size` 属性限制文本框能显示的字符数目
+  - 使用 `maxlength` 属性限制用户能够输入的字符数目
+  - 使用 `value` 属性提供默认初始值
+  - 使用 `placeholder` 属性提供占位提示语
+  - 使用 `list` 属性关联一组数据列表（值与 `datalist` 元素的 `id` 值相同），输入文本时可直接选择一个选项
+  - 使用 `readonly` 属性阻止用户编辑内容，但既不影响表单外观，又不影响数据发送至服务器
+  - 使用 `required` 属性确保用户提供了一个值，否则将阻止表单提交
+  - 使用 `pattern` 属性确保用户输入能匹配一个正则表达式
+  - 其他属性：`dirname`
+- 如果类型为 `password`，可用于输入密码。输入的文本会被替换为掩饰字符（通常是星号或圆点），但仍为明文传输
+  - 可用属性：`maxlength`、`pattern`、`placeholder`、`readonly`、`required`、`size`、`value`
+- 如果类型为 `submit` 或 `reset` 或 `button`，将生成同类型的 `button`
+- 如果类型为 `number`，则只能输入数值
+  - 使用 `min`、`max` 和 `step` 属性分别设定可接受的最小值、最大值，以及调节的步长
+  - 其他属性：`value`、`list`、`readonly`、`required`
+- 如果类型为 `range`，则只能输入指定范围内的数值，但通常以滑块形式呈现
+  - 可用属性：`value`、`list`、`readonly`、`required`、`min`、`max`、`step`
+- 如果类型为 `checkbox`，则呈现布尔型复选框
+  - 可用属性：`value`、`checked`、`required`
+- 如果类型为 `radio`，则呈现互斥单选按钮，互斥效果通过给多个 `radio` 型相同的 `name` 属性实现
+  - 可用属性：`value`、`checked`、`required`
+- 如果类型为 `email` 或 `tel` 或 `url`，则只接受有效的邮箱、电话或 URL
+  - 可用属性：`maxlength`、`pattern`、`placeholder`、`readonly`、`required`、`size`、`value`、`list`
+  - 其中 `email` 类型还可以使用 `multiple` 属性
+- 如果类型为 `datetime` 或 `datetime-local` 或 `date` 或 `month` 或 `week` 或 `time`，则只接受日期和时间
+  - 可用属性：`max`、`min`、`step`、`value`、`readonly`、`required`、`list`
+- 如果类型为 `color`，则只接受颜色，通常会调用颜色选择器。可用属性为 `list`
+- 如果类型为 `search`，则只接受搜索词，但本质上和 `text` 型一致
+- 如果类型为 `hidden`，则会隐藏该表单，用于无需被用户看到的表单项
+- 如果类型为 `image`，则会生成一个图像型的提交按钮，且会额外提交相对于图像左上角的点击坐标
+  - 可以使用一些 `image` 元素的属性：`src`、`alt`、`width`、`height`
+  - 可以使用一些提交按钮的属性：`formaction`、`formenctype`、`formmethod`、`formtarget`、`formnovalidate`
+- 如果类型为 `file`，则可以用于上传文件
+  - 使用 `accept` 属性指定接受的 `MIME` 类型
+  - 使用 `multiple` 属性声明可以一次上传多个文件
+  - 使用 `required` 属性表明必须提供一个值，否则无法通过输入验证
+
 
 ### Embed Level Element
 
