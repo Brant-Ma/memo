@@ -27,6 +27,47 @@
 - `px`：实际的浏览器实现将 `px` 视为绝对单位，`1px` 约为 `1/96in`
 - `%`：与某属性值的百分比挂钩，使用 `%` 单位的不同属性与不同的属性值挂钩
 
+关于盒模型（Box Model）：
+
+- 盒是布局方案的实体对象
+- 盒模型（Box Model）定义了盒子的尺寸和四个区域的划分
+- 盒子的布局上下文是包含块，通常是块级父容器的内容区（content）
+- 块级盒（block box）宽度默认充满包含块
+- 行内盒（inline box）宽度由实际内容决定，`width` 和 `height` 的设定无效
+- border-box 情况下，盒子的 content、padding、border 之和等于其 `width` 或 `height`
+- 盒子的 content、padding、border、margin 之和等于其包含块的 content 区域的宽度或高度
+
+关于视觉格式化（Visual Formatting）：
+
+- 基本格式化包括：block 格式化、inline 格式化、inline-block 格式化
+- block 格式化：垂直、顺序的布局，纵向的相邻 `margin` 将合并为其中的最大值
+- inline 格式化：水平、顺序的布局，纵向的 `margin` 和 `padding` 均无效，inline box 整体构成 line box
+- inline-block 格式化：内部采用 block 格式化，外部采用 inline 格式化
+
+关于常规流（Normal Flow）：
+
+- 常规流包含两种：`position` 属性值为 `static` 或 `relative`
+- 常规流的特点是不脱离文档流，包含 block/inline 格式化
+- `position: static` 盒子的四向位移和 Z 轴层级无效
+- `position: relative` 盒子的四向位移和 Z 轴层级均可以使用
+
+关于浮动（Float）：
+
+- 浮动通常用于图文环绕，或者模拟 inline-block 布局
+- 浮动由 `float: left/right` 触发，通常需要配合 `width` 设定
+- 清除浮动通常采用伪元素解决方案：`clear: both/left/right`
+- 浮动效果是脱离文档流，形成新的 BFC，按指定方向浮动到包含块或浮动块的边缘，水平空间不足就下移至可以摆放为止
+- 所在 BFC 内，inline box 会环绕 float 块，float 块会覆盖 block box
+- `float: left/right` 盒子的四向位移和 Z 轴层级无效
+
+关于绝对定位（Absolute Position）：
+
+- 绝对定位包含两种：`position` 属性值为 `absolute` 或 `fixed`
+- 绝对定位的效果是脱离文档流，形成新的 BFC，且盒子的四向位移和 Z 轴层级均可使用
+- `position: absolute` 的四向位移相对于最近的 `relative/absolute/fixed` 包含块
+- `position: fixed` 的四向位移相对于 viewport
+- 绝对定位的 Z 轴层级会形成堆叠上下文（stacking context），盒子的层级堆叠仅发生在相同的堆叠上下文中，且事件无法穿透堆叠上下文
+
 ### Selector
 
 #### 层叠与继承
