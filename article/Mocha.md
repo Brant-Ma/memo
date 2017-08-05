@@ -1,7 +1,7 @@
 ## Mocha
-> 原来 mocha 既可以是一种 flavor，也可以是一种 coffee...
+> mocha 和 java 的 icon 都是咖啡...
 
-选择 Mocha 而不是 Jasmine 可能更多的是因为抹茶比茉莉更有趣吧。
+选择 Mocha 而不是 Jasmine 可能更多的是因为摩卡比茉莉更有趣吧。
 
 ### 单元测试
 
