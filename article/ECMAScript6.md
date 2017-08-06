@@ -1,7 +1,9 @@
 ## ECMAScript 6
 > ES6 跟 ES5 比起来就像是另一门语言
 
-尼古拉斯的 Understanding ES6 都快第二版了，但国内第一版还没出来。那就不等啦。笔记目录如下：
+尼古拉斯的 Understanding ES6 都快第二版了，但国内第一版还没出来。那就不等啦。
+
+阅读过程对重点做了相对精简的笔记，方便日后回顾。笔记目录如下：
 
 1. [Block Binding](#block-binding)
 2. [String & Regular Expression](#string-and-regular-expression)
@@ -1117,7 +1119,282 @@ fs.readFile('config.json', (err, data) => {
 
 ### Class
 
- 由于很多开发者喜欢模拟类，ES6 最终提供了类的语法糖。
+JS 过去不存在类，通常采用的面向对象的基本模式是，实例属性放进构造器，这使得实例的自有属性（own properties）很集中；原型方法放进原型，这使得所有实例可以共享方法：
+
+```javascript
+function Person(name) {
+  this.name = name
+}
+
+Person.prototype.sayName = function() {
+  console.log(this.name)
+}
+```
+
+由于很多开发者喜欢模拟类，ES6 最终提供了类。类的声明如下：
+
+```javascript
+class Person {
+  constructor(name) {
+    this.name = name
+  }
+
+  sayName() {
+    console.log(this.name)
+  }
+}
+```
+
+这种类的声明可以将对象的相关内容封装在一起，语法像对象字面量一样简洁，而且实例构造器与原型方法之间既不需要逗号，也不需要分号。但其实类声明只是一个语法糖：
+
+```javascript
+let Person = (function() {
+  'use strict'
+
+  const Person = function(name) {
+    if (typeof new.target === 'undefined') {
+      throw new Error('constructor must be called with new.')
+    }
+
+    this.name = name
+  }
+
+  Object.defineProperty(Person.prototype, 'sayName', {
+    value: function() {
+      if (typeof new.target !== 'undefined') {
+        throw new Error('Method cannot be called with new.')
+      }
+
+      console.log(this.name)
+    },
+    enumerable: false,
+    writable: true,
+    configurable: true
+  })
+
+  return Person
+}())
+```
+
+通过观察语法糖背后实际的代码，可以有几点关于 ES6 class 的结论：
+
+- 类声明的代码自动运行在严格模式中
+- 类的方法不可以被枚举
+- 不使用 `new` 调用类的构造器会抛错，使用 `new` 调用类的方法会抛错
+- 类名在内部用 `const` 声明，因此在内部无法被重写；类名在外部用 `let` 声明，因此在外部可以被重写，且不存在提升
+
+除了可以使用类声明，还可以使用类表达式：
+
+```javascript
+// 匿名类表达式
+let Person = class { /* ... */ }
+
+// 具名类表达式
+let Person = class PersonClass { /* ... */ }
+```
+
+不同于函数声明与函数表达式的区别（前者存在提升），类声明与类表达式几乎完全一致，因为二者都不存在提升。唯一的差异出在具名类表达式：内部由 `const` 声明的类名（`PersonClass`），与外部由 `let` 声明的类名（`Person`）将不再一致。
+
+JS 的特别之处在于将函数作为一等公民（first-class citizen），即函数能被当做值来使用：可以作为参数传给函数、可以作为函数的返回值、可以用来给变量赋值。
+
+而 ES6 将类也作为了一等公民。除了参数、返回值和赋值的用途，还能通过立即调用类的构造器来创建一个单例：
+
+```javascript
+let person = new class {
+  constructor(name) {
+    this.name = name
+  }
+
+  sayName() {
+    console.log(this.name)
+  }
+}('es6')
+```
+
+由于匿名类表达式的类引用只存在于内部（由 `const` 创建绑定），外部不存在类引用，因此可以保证实例的唯一性。
+
+在原型上定义访问器属性也十分简单，同时也可以使用需计算的属性名（一般的原型方法同样可以）：
+
+```javascript
+let methodName = 'html'
+
+class CustomHTMLElement {
+  constructor(element) {
+    this.element = element
+  }
+
+  get [methodName]() {
+    return this.element.innerHTML
+  }
+
+  set [methodName](val) {
+    this.element.innerHTML = val
+  }
+}
+```
+
+也可以为一个集合类型的类定义一个默认的迭代器：
+
+```javascript
+class Collection {
+  constructor() {
+    this.items = []
+  }
+
+  *[Symbol.iterator]() {
+    yield this.items.values()
+  }
+}
+```
+
+上述的方法和访问器属性之所以可以被实例访问，是因为它们被定义在类的原型上。如果只想让方法和访问器属性不依赖任何实例就可以访问，则需要定义静态方法：
+
+```javascript
+class Person {
+  // 构造器: Person
+  constructor {
+    this.name = name
+  }
+
+  // 实例方法: Person.prototype.sayName
+  sayName() {
+    console.log(this.name)
+  }
+
+  // 静态方法: Person.create
+  static create(name) {
+    return new Person(name)
+  }
+}
+```
+
+前面提到，类的所有方法默认都是不可枚举的。这里的方法是指所有的方法，既包括绑定在原型上的实例方法，也包括绑定在构造器上的静态方法。
+
+过去如果要实现对象继承，需要写冗长的代码。如果使用类的话，将会简单很多。只需用 `extends` 指定继承（不用再显式的将原型指向一个实例），用 `super()` 访问基类的构造器（不用再使用 `call` 方法）：
+
+```javascript
+class Rectangle {
+  constructor(length, width) {
+    this.length = length
+    this.length = width
+  }
+
+  getArea() {
+    return this.length * this.width
+  }
+
+  static create(length, width) {
+    return new Rectangle(length, width)
+  }
+}
+
+class Square extends Rectangle {
+  constructor(length) {
+    super(length, length)
+  }
+}
+```
+
+派生类如果指定了构造器，则必须使用 `super()`；如果没有指定构造器，将自动调用 `super()`。即 `super()` 方法必然会被调用，除非构造器会返回一个对象。非派生类（没有 `extends` 关键字的类）不允许使用 `super()`。
+
+值得注意的是，由于派生类中的构造器是通过 `super()` 调用基类的构造器，因此派生类的 `new.target` 将不再指向自身的构造器，而是指向基类。
+
+```javascript
+// 空的派生类，调用基类的构造器，继承基类的实例方法
+class Square extends Rectangle {}
+
+// 屏蔽同名的实例方法 Rectangle.prototype.getArea
+class Square extends Rectangle {
+  constructor(length) {
+    super(length, length)
+  }
+
+  getArea() {
+    return this.length * this.length
+  }
+}
+
+// 形式上屏蔽方法，实际上显式调用
+class Square extends Rectangle {
+  constructor(length) {
+    super(length, length)
+  }
+
+  getArea() {
+    return super.getArea()
+  }
+}
+
+// 派生类将直接拥有静态方法
+Square.create(2, 2)
+```
+
+另外，调用 `super()` 之前不允许使用 `this`，因为 `super()` 与 `this` 的初始化有关：基类创建 `this` 后，派生类才能继续访问或修改 `this`，这也使得内置对象可以被继承。
+
+```javascript
+// 派生类可以继承基类的所有功能
+class CustomArray extends Array {}
+
+const items = new CustomArray()
+const subitems = items.slice()
+
+// 由于 Symbol.species 属性， 基类的实例方法将返回了派生类的实例
+console.log(items instanceof CustomArray)     // true
+console.log(subitems instanceof CustomArray)  // true
+```
+
+`extends` 关键字的后面不一定是基类，也可以是一个表达式，只要表达式能够返回一个函数，该函数具有 `[[constructor]]` 属性和原型即可：
+
+```javascript
+function Rectangle(length, width) {
+  this.length = length
+  this.width = width
+}
+
+Rectangle.prototype.getArea = function() {
+  return this.length * this.width
+};
+
+function getBase() {
+  return Rectangle
+}
+
+class Square extends getBase() {
+  constructor(length) {
+    super(length, length)
+  }
+}
+```
+
+这使得混入模式（mixin）得以实现：
+
+```javascript
+const serializeMixin = {
+  serialize() {
+    return JSON.stringify(this)
+  }
+}
+
+const areaMixin = {
+  getArea() {
+    return this.length * this.width
+  }
+}
+
+const mixin(...mixins) {
+  const base = function() {}
+  Object.assign(base.prototype, ...mixins)
+  return base
+}
+
+class Square extends mixin(serializeMixin, areaMixin) {
+  constructor(length) {
+    super()
+    this.length = length
+    this.width = length
+  }
+}
+```
 
 ### Array
 
