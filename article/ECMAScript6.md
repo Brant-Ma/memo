@@ -1532,6 +1532,175 @@ console.log(view2.byteLength)  // 4
 
 ### Promise and Asynchronous Programming
 
+JS 引擎同一时刻只能执行一段代码，即单线程（single-threaded）。需要被执行的代码会被放进作业队列（job queue）中，统一交给一个叫做事件循环（event loop）的内部处理线程处理。
+
+在 browser 环境中，事件模型（event）是基础，当然也可以使用 `addEventListener`。
+
+```javascript
+const button = document.getElementById('btn')
+button.onclick = (ev) => {
+  console.log(ev.type)
+}
+```
+
+在 node 环境中，回调模式（callback）很普遍，但容易出现回调嵌套过深的情况。
+
+```javascript
+readFile('demo.txt', (err, data) => {
+  if (err) throw err
+  console.log(data)
+})
+```
+
+异步编程不够自然的原因是，回调的逻辑需要等待异步的结果。如果能提前为异步操作的结果准备一个占位符，就不需要订阅事件或者传入回调了。
+
+这个占位符就是 Promise，它的声明周期是从未决状态（unsettled）到已决状态（settled）的过程。这个过程对应了两种状态变化的可能性：从 pending 状态到 fulfilled 状态，或者从 pending 状态到 rejected 状态。
+
+这三种状态并没有在 Promise 对象上暴露出来，但可以使用 `then()` 指定在状态改变时需要执行的操作，两个可选参数分别代表已决状态的两种情况（完成和拒绝），也可以用 `catch()` 只传递拒绝参数：
+
+```javascript
+let promise = readFile('demo.txt')
+
+// 两个参数
+promise.then((data) => {
+  console.log(data)
+}, (err) => {
+  console.log(err.message)
+})
+
+// 只有完成参数
+promise.then((data) => {
+  console.log(data)
+})
+
+// 只有拒绝参数
+promise.then(null, (err) => {
+  console.log(err.message)
+})
+
+promise.catch((err) => {
+  console.log(err.message)
+})
+```
+
+每次调用 `then()` 或 `catch()` 都会创建一个新的任务，任务将在 Promise 已决时被执行。具体而言，这些任务是被添加到一个为 Promise 保留的队列中，因此即使是在某种已决状态下，依然可以继续添加一个新的任务：
+
+```javascript
+let promise = readFile('demo.txt')
+
+promise.then((data) => {
+  console.log(data)
+
+  promise.then((data) => {
+    console.log(data)
+  })
+})
+```
+
+通过 Promise 构造器可以将一个异步调用封装为一个 promise。构造器的参数是一个执行器函数，它指定了两个用于已决状态的函数，其中 `resolve()` 接收内容，`reject()` 接收错误：
+
+```javascript
+let fs = require('fs')
+
+function readFile(filename) {
+  return new Promise((resolve, rejuect) => {
+    fs.readFile(filename, (err, data) => {
+      if (err) {
+        reject(err)
+        return
+      }
+      resolve(data)
+    })
+  })
+}
+
+let promise = readFile('demo.txt')
+
+promise.then((data) => {
+  console.log(data)
+}, (err) => {
+  console.log(err.message)
+})
+```
+
+需要注意的是，执行器函数是立即执行的：
+
+```javascript
+let promise = new Promise((resolve, reject) => {
+  console.log('promise')
+  resolve()
+})
+
+promise.then(() => { console.log('resolved') })
+
+console.log('test')
+
+// 输出依次为： promise test resolved
+```
+
+Promise 构造器可以构造一个未决的 promise，而通过另外两个静态方法（`Promise.resolve()` 和 `Promise.reject()`）也可以创建已决的 promise。就像构造器的 `resolve()` 和 `reject()` 参数一样，这两个静态方法也同样是接收完成的数据和拒绝的数据，并需要 `then()` 和 `catch()` 来提取这些数据。
+
+如果传入这两个静态方法的参数依然是一个 Promise，则情况稍有不同：给 `Promise.resolve()` 传入的是未决态或完成态，或者给 `Promise.reject()` 传入的是拒绝态，则返回原 promise；其他的组合情况均会在原 promise 上包装一个新的 promise 再返回。
+
+如果传入这两个静态方法的参数不是 promise，但是个具有 `then()` 方法的对象，则会将该对象转化为一个已决的 promise 再返回。这对于一个不确定是否为 promise 的对象十分有用：可以放心的传入静态方法中，无论它是否是 promise，最终都会返回一个 promise。
+
+另外，执行器内部如果抛错，那么拒绝处理函数即 `catch()` 会负责捕获：
+
+```javascript
+// 执行器抛错
+let promise = new Promise((resolve, reject) => {
+  throw new Error('oh, shit')
+})
+
+// 其实相当于
+let promise = new Promise((resolve, reject) => {
+  try {
+    throw new Error('oh, shit')
+  } catch (err) {
+    reject(err)
+  }
+})
+
+promise.catch((err) => { console.log(err.message) })  // 'oh, shit'
+```
+
+一个 promise 如果缺少拒绝处理函数，将会导致静默失败。所以需要有全局的兜底方式来识别并处理这些已被拒绝但没有被处理的 promise。而 node 和 browser 都提供了类似的机制进行处理：`unhandledrejection` 事件和 `rejectionHandled` 事件。
+
+区别在于，node 是在 `process` 对象上关联这两个事件，而 browser 是在 `window` 对象上。需要注意的是，任何一个 promise 的处理函数（完成或拒绝）都是在 event loop 的当前 tick 中执行的。
+
+promise 可以进行串联。这是由于 `then()` 和 `catch()` 会返回一个新的 promise，而新的 promise 对象同样具有 `then()` 和 `catch()` 方法：
+
+```javascript
+let p1 = new Promise((resolve, reject) => {
+  resolve('resolved')
+})
+
+// 分开的版本
+let p2 = p1.then((data) => {
+  console.log(data)
+})
+p2.then(() => {
+  console.log('finished')
+})
+
+// 串联的版本
+p1.then((data) => {
+  console.log(data)
+}).then(() => {
+  console.log('finished')
+})
+```
+
+promise 链中的处理函数可以捕获上一个处理函数中的错误。因此链尾应该添加一个拒绝处理函数 `catch()`。promise 链中的处理函数也可以返回一个值，该值将会被传递给下一个处理函数，该值也可以是一个 promise。
+
+ES6 提供了监视多个 promise 的静态方法。`Promise.all()` 和 `Promise.race()` 接收包含多个 promise 的可迭代对象（如数组），返回一个新的 promise。
+
+`Promise.all()` 如果所有成员都完成则新的 promise 为完成态，完成处理函数将会接收一个所有完成值组成的数组；如果任意成员被拒绝则新的 promise 为拒绝态，拒绝处理函数将会接收这个拒绝值。
+
+`Promise.race()` 如果任意成员已完成则新的 promise 为完成态，完成处理函数将会接收这个完成值；如果任意成员被拒绝则新的 promise 为拒绝态，拒绝处理函数将会接收这个拒绝值。
+
+最后，promise 也可以作为基类被继承从而自定义派生类，还可以与生成器结合从而简化异步任务的运行。
+
 ### Proxy and Reflection
 
 目前用不到，暂时先跳过。（感觉比 Symbol 还麻烦）
