@@ -21,6 +21,7 @@ For more details: [GitHub Repo](https://github.com/Brant-Ma/memo)
 ### Part 3 工程开发
 - [Git](article/Git.md)
 - [npm](article/npm.md)
+- [web Performance](article/webPerformance.md)
 - [Electron](article/Electron.md)
 - [Command Line](article/CommandLine.md)
 - [ESLint](article/ESLint.md)
