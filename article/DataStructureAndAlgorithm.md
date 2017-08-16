@@ -4,12 +4,153 @@
 笔记目录：
 
 - [Data Structure](#data-structure)
+  - [Array](#array)
+  - [Enum](#enum)
 - [Algorithm](#algorithm)
   - [Analysis](#analysis)
   - [Sort](#sort)
   - [Search](#search)
 
+### Data Structure
+
+常见的数据结构有：Array、Stack、Queue、LinkedList、Set、Map、Tree 和 Graph。
+
+#### Array
+
+判断数组的方式有很多，常用的有：
+
+- `arr instanceof Array`（如果 arr 来自其他 iframe 则会失败）
+- `Array.isArray(arr)`（可能说是很优雅了）
+- `Object.prototype.toString.call(arr).slice(8, -1) === 'Array'`（万能的 toString）
+
+数组有几个静态方法：
+
+`Array.from(arrayLike, mapFn, thisArg)` 可以从类数组对象或者可迭代对象中创建一个数组：
+
+```javascript
+Array.from({length: 3}, (val, index) => index)  // [0, 1, 2, 3]
+Array.from('abc')                               // ['a', 'b', 'c']
+```
+
+`Array.isArray(obj)` 可判断一个对象是否是一个数组：
+
+```javascript
+Array.isArray(Array)            // false
+Array.isArray(Array.prototype)  // true
+```
+
+`Array.of(item1, ..., itemN)` 使用参数创建一个数组实例：
+
+```javascript
+Array.of(1)  // [1]
+Array(1)     // []
+```
+
+数组还有许多的实例方法。有一些是会改变数组本身的 mutator 方法：
+
+- `unshift(item1, ..., itemN)` 添加元素到头部，返回新长度
+- `shift()`：移除头部的元素，返回该元素
+- `push(item1, ..., itemN)` 添加元素到尾部，返回新长度
+- `pop()` 删除尾部的元素，返回该元素
+- `sort(compareFn)` 为数组排序，返回修改过的数组。默认顺序是按照字符串代码点，回调函数具有两个参数
+- `reverse()` 反转数组顺序，返回新数组
+- `splice(start, delCount, item1, ..., itemN)` 从指定位置开始删除并添加元素，返回被删除的元素组成的数组。默认 delCount 是从开始位置到最后，默认无 item
+- `fill(value, start, end)` 用一个固定值对数组的某个范围进行填充，返回修改过的数组。默认 start 是 0，默认 end 是 this.length
+- `copyWithin(target, start, end)` 浅拷贝数组某个范围的元素并从目标位置开始粘贴，返回修改过的数组。默认 start 是 0，默认 end 是 this.length
+
+有一些是不改变数组本身，而是返回新数组的 accessor 方法：
+
+- `indexOf(target, start)` 查找元素在数组中的索引，返回第一个匹配到的索引或者 -1。默认 start 是 0
+- `lastIndexOf(target, start)` 同上，但从后向前查找
+- `toString()` 返回数组元素的字符串形式，通常分隔符是逗号。该方法覆盖（override）了对象的实例方法
+- `slice(start, end)` 返回数组某部分的浅拷贝。默认 start 是 0，默认 end 是 this.length
+- `join(separator)` 返回数组元素的字符串形式。默认分隔符是逗号
+- `concat(item1, ..., itemN)` 返回由该数组和其他数组或元素连接而成的新数组
+- `includes(target, start)` 返回数组是否包含某个值。默认 start 是 0
+
+有一些是通常需要 callback 作为参数的 iteration 方法，通常不建议在逻辑中改变数组本身。callback 的参数通常是（value, index, array）
+
+- `forEach(callback, thisArg)` 为每个元素执行一次 callback，返回 undefined
+- `every(callback, thisArg)` 测试是否每个元素的 callback 都返回 true，最终返回 true 或 false
+- `some(callback, thisArg)` 测试是否存在元素的 callback 能返回 true，最终返回 true 或 false
+- `map(callback, thisArg)` 返回一个由每个元素的 callback 返回值构成的新数组
+- `filter(callback, thisArg)` 返回一个由通过 callback 测试的元素所构成的新数组
+- `find(callback, thisArg)` 查询满足 callback 测试条件的元素，返回匹配到的第一个元素或 undefined
+- `findIndex(callback, thisArg)` 查询满足 callback 测试条件的元素，返回匹配到的第一个元素的索引或 -1
+- `reduce(callback, initial)` 对累加器和当前元素调用 callback 并返回值作为下个元素的累加器，最终使数组缩减为一个值并返回。initial 默认是第一个元素，callback 的参数与其他 iteration 方法不同：（sum, value, index, array）
+- `reduceRight(callback, initial)` 同上，但从后向前进行 reduce
+- `keys()` 返回一个包含数组元素 index 的可迭代对象
+- `values()` 返回一个包含数组元素 value 的可迭代对象
+- `entries()` 返回一个包含数组元素键值对的可迭代对象
+- `[Symbol.iterator]()` 返回一个可迭代对象，默认采用 `values()` 方法的结果
+
+#### Enum
+
+ES6 引入了 const 来声明常量。平时开发也确实会遇到常量，比如项目的配置参数和应用状态。极端的开发者甚至会选择这样一种变量的声明方案：首选 const，少用 let，不用 var。（Airbnb 就采用了这样的代码风格）
+
+但如果存在大量的常量，其中一些常量之间有关联呢？可以选择进行分组：
+
+```javascript
+const Size = {
+  SMALL: 0,
+  MEDIUM: 1,
+  LARGE: 2
+}
+
+let mySize = Size.SMALL
+```
+
+这样似乎是够用了。但如果每个常量还有对应的一些属性呢？可以再加一个属性来统一存储：
+
+```javascript
+const Size = {
+  SMALL: 0,
+  MEDIUM: 1,
+  LARGE: 2,
+  props: {
+    0: { name: 'small', value: 0, label: 'S' },
+    1: { name: 'medium', value: 1, label: 'M' },
+    2: { name: 'large', value: 2, label: 'L' }
+  }
+}
+
+let mySize = Size.SMALL
+let myLabel = Size.props[mySize].label
+```
+
+目前已经可以将常量的值和相关属性完美的关联在一起了。但现在的常量和属性需要自己去手动关联，如果能用对象的方法去构造和访问就更好了：
+
+```javascript
+class Size {
+  constructor(name, label) {
+    this.name = name
+    this.label = label
+  }
+
+  getName() { return this.name }
+
+  getLabel() { return this.label }
+}
+
+Size.SMALL = new Color('small', 'S')
+Size.MEDIUM = new Color('medium', 'S')
+Size.LARGE = new Color('large', 'S')
+
+Object.freeze(Size)
+
+let mySize = Size.SMALL
+let myLabel = Size.SMALL.getLabel()
+```
+
+上述过程实际上是通过类模拟了枚举类型。
+
+每个枚举值都是类的一个实例，并且分配给了类的一个静态属性。每个枚举值都具有实例方法，可以访问相关的属性。枚举类在实例创建和分配完毕后被冻结了，意味着不能再被修改。
+
+而这也符合了枚举类型的特点：枚举值是常量（冻结后不能修改），所有枚举值具有相同的枚举类型（都是同一个类的实例），每个枚举值具有自己的属性和方法（实例具有属性和方法）。
+
 ### Algorithm
+
+最基本的算法是排序算法和搜索算法。
 
 #### Analysis
 
@@ -176,4 +317,6 @@ const binarySearch = (arr, item) => {
 ### 参考
 
 1. [学习 JavaScript 数据结构与算法 - Loiane Groner](https://book.douban.com/subject/26639401/)
-2.
+2. [Array - JavaScript | MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)
+3. [JavaScript 中的枚举](http://kingzez.com/2016/05/23/Enums-in-javascript-%E8%AF%91/)
+4. [谈谈 JavaScript 枚举类型](https://zhuanlan.zhihu.com/p/24880652)
