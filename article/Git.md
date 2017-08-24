@@ -72,6 +72,11 @@
 - 将已追踪文件的 Workspace 保存为工作现场：`$ git stash`
 - 还原工作现场到 Workspace 并删除 stash：`$ git stash pop`
 
+#### 标签操作
+- 列出已有的标签：`$ git tag`
+- 新建轻量级标签：`$ git tag [tag]`
+- 向远程推送标签：`$ git push origin --tags`
+
 #### 同步流程
 - 拉取远程分支到本地仓库：`$ git fetch`
 - 合并指定分支到当前分支：`$ git merge [orgin/branch]`
